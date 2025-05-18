@@ -1,0 +1,5 @@
+import eng_to_ipa as p 
+  
+  
+converted = p.convert("Hello Geeks")
+print(converted)

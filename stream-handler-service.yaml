@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kokoro-stream-handler-service
+  labels:
+    app: kokoro-stream-handler
+spec:
+  selector:
+    app: kokoro-stream-handler
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer

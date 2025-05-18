@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kokoro-stream-handler-deployment
+  labels:
+    app: kokoro-stream-handler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kokoro-stream-handler
+  template:
+    metadata:
+      labels:
+        app: kokoro-stream-handler
+    spec:
+      serviceAccountName: kokoro-pubsub-publisher-ksa
+      containers:
+      - name: stream-handler-container
+        image: northamerica-northeast2-docker.pkg.dev/diesel-dominion-452723-h7/kokoro-services/kokoro-stream-handler-service:v0.1.2
+        ports:
+        - containerPort: 8080
+        env:
+        - name: GCP_PROJECT_ID
+          value: "diesel-dominion-452723-h7"
+        - name: PUBSUB_RAW_AUDIO_TOPIC
+          value: "kokoro-raw-audio-dev"
+        - name: PORT
+          value: "8080"
+        - name: KOKORO_WAKE_DETECTOR_GRPC_ADDRESS
+          value: "kokoro-wake-detector-service.default.svc.cluster.local:50051"

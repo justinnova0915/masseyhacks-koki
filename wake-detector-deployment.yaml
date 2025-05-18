@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kokoro-wake-detector-deployment
+  labels:
+    app: kokoro-wake-detector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kokoro-wake-detector
+  template:
+    metadata:
+      labels:
+        app: kokoro-wake-detector
+    spec:
+      serviceAccountName: kokoro-pubsub-publisher-ksa
+      containers:
+      - name: wake-detector-container
+        image: northamerica-northeast2-docker.pkg.dev/diesel-dominion-452723-h7/kokoro-services/kokoro-wake-detector-service:v0.1.5
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 50051
+          name: grpc
+        env:
+        - name: GCP_PROJECT_ID
+          value: "diesel-dominion-452723-h7"
+        - name: PUBSUB_WAKE_WORD_TOPIC
+          value: "kokoro-wake-word-dev"
+        - name: KOKORO_WAKE_WORD_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: kokoro-secrets
+              key: picovoice_access_key
+        - name: CUSTOM_KEYWORD_PATH
+          value: "/app/porcupine_files/hey-koki_en_linux_v3_0_0.ppn"
+        - name: WAKE_WORD_SENSITIVITY
+          value: "0.5"
+        - name: KOKORO_WAKE_DETECTOR_GRPC_PORT
+          value: "50051"

@@ -1,0 +1,25 @@
+# 1. Base Image
+FROM python:3.9-slim
+
+# 2. Working Directory
+WORKDIR /app
+
+# 5. Environment Variables
+ENV PYTHONUNBUFFERED=1
+# PORT will be set by the cloud environment, default is 8080 in the app
+
+# 3. Copy Requirements and Install
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 4. Copy Application Code
+COPY stream_handler_service.py ./
+COPY kokoro_config.py ./
+COPY audio_stream_pb2.py .
+COPY audio_stream_pb2_grpc.py .
+
+# 6. Expose Port
+EXPOSE 8080
+
+# 7. Command
+CMD ["uvicorn", "stream_handler_service:app", "--host", "0.0.0.0", "--port", "8080"]

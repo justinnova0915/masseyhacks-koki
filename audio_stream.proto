@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package kokoro_audio_stream;
+
+option py_generic_services = true;
+
+message AudioChunk {
+  bytes audio_data = 1;         // The raw audio bytes (e.g., 16-bit PCM)
+  string stream_id = 2;         // Optional: An identifier for the continuous audio stream
+  int64 timestamp_ms = 3;       // Optional: Timestamp of when the chunk was captured/sent (milliseconds since epoch)
+  int32 sequence_number = 4;    // Optional: For ordering chunks if the stream might be out of order
+  // Potentially add audio metadata if needed, e.g., sample_rate, channels, format,
+  // though it's often assumed these are agreed upon out-of-band for a specific stream.
+}
+
+message StreamSummary {
+  enum Status {
+    UNKNOWN = 0;
+    SUCCESS_PROCESSED = 1; // All chunks received and processed (or queued for processing)
+    ERROR_PROCESSING = 2;  // An error occurred on the server side
+  }
+  Status status = 1;
+  string message = 2;           // Optional: Details, e.g., "Received X chunks" or error info
+  int32 total_chunks_received = 3;
+}
+
+service AudioStreamer {
+  // Client sends a stream of audio chunks, server responds once when client is done.
+  rpc ProcessAudioStream (stream AudioChunk) returns (StreamSummary);
+}

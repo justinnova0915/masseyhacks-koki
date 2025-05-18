@@ -1,0 +1,24 @@
+# Dockerfile.face_tracker
+# Base image
+FROM python:3.9-slim
+
+# Set working directory
+WORKDIR /app
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+
+# Copy requirements.txt and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir opencv-python numpy onnxruntime
+
+# Copy application code
+COPY face_tracking_server.py .
+COPY kokoro_config.py .
+
+# Copy the ONNX model file
+COPY face_detection_yunet_2023mar.onnx .
+
+# Command to run the application
+CMD ["python", "face_tracking_server.py"]

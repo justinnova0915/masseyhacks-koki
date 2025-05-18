@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.env
+.venv
+venv/
+ENV/
+
+# Logs
+*.log
+agent_debug.log
+whisper_test.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Model files and data
+models/
+data/
+wake_word_debug_info.txt
+debug_audio/
+udp_audio_tests/
+speech_samples/
+audio_analysis/
+output.txt
+response.wav
+response_complete.txt
+*.wav
+Rhubarb-Lip-Sync-1.14.0-Linux/

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kokoro-ai-agent-deployment
+  labels:
+    app: kokoro-ai-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kokoro-ai-agent
+  template:
+    metadata:
+      labels:
+        app: kokoro-ai-agent
+    spec:
+      serviceAccountName: kokoro-ai-agent-ksa
+      containers:
+      - name: ai-agent-container
+        image: northamerica-northeast2-docker.pkg.dev/diesel-dominion-452723-h7/kokoro-services/kokoro-ai-agent-service:v0.3.0
+        imagePullPolicy: Always
+        env:
+        - name: GCP_PROJECT_ID
+          value: "diesel-dominion-452723-h7"
+        - name: PUBSUB_WAKE_WORD_TOPIC
+          value: "kokoro-wake-word-dev"
+        - name: KOKORO_TTS_VOICE_NAME
+          value: "en-US-Chirp3-HD-Autonoe"
+        - name: KOKORO_TTS_LANGUAGE_CODE
+          value: "en-US"
+        - name: KOKORO_LLM_MODEL
+          value: "llama3.1:8b-instruct"
